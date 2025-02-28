@@ -1,11 +1,13 @@
 import 'package:pokedex_app/core/exceptions/error_desconocido.dart';
+import 'package:pokedex_app/core/exceptions/error_no_encontrado.dart';
 import 'package:pokedex_app/core/exceptions/error_parametros.dart';
 import 'package:pokedex_app/core/exceptions/error_servidor.dart';
 import 'package:pokedex_app/core/exceptions/error_sin_autorizacion.dart';
 import 'package:pokedex_app/core/exceptions/error_sin_conexion.dart';
-import 'package:pokedex_app/core/failures/failures.dart';
+import 'package:pokedex_app/core/failures/failure.dart';
 import 'package:pokedex_app/data_sources/pokemon_api_data_source.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:pokedex_app/models/detalle_pokemon.dart';
 import 'package:pokedex_app/models/lista_pokemones.dart';
 
 class PokemonRepository {
@@ -36,7 +38,29 @@ class PokemonRepository {
     } on ErrorSinAutorizacion {
       return Either.left(FallaDeAutorizacion());
     } on ErrorSinConexion {
-      return Either.left(FallaEnLaConeccion());
+      return Either.left(FallaEnLaConexion());
+    }
+  }
+
+  Future<Either<Failure, DetallePokemon>> obtenerDetallePokemon(int id) async {
+    try {
+      final resultado = await pokemonApiDataSource.peticionGet(
+        path: '$_path/$id',
+      );
+
+      return Either.right(DetallePokemon.fromMap(resultado));
+    } on ErrorDesconocido {
+      return Either.left(FallaDesconocida());
+    } on ErrorParametros {
+      return Either.left(FallaParametros());
+    } on ErrorServidor {
+      return Either.left(FallaServidor());
+    } on ErrorSinAutorizacion {
+      return Either.left(FallaDeAutorizacion());
+    } on ErrorSinConexion {
+      return Either.left(FallaEnLaConexion());
+    } on ErrorNoEncontrado {
+      return Either.left(FallaNoEncontrado());
     }
   }
 }

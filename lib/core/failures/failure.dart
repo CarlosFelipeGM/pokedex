@@ -21,8 +21,8 @@ class FallaDeAutorizacion extends Failure {
       : super(mensaje: 'Error en los parametros de autorizacion');
 }
 
-class FallaEnLaConeccion extends Failure {
-  FallaEnLaConeccion() : super(mensaje: 'Usted no tiene internet');
+class FallaEnLaConexion extends Failure {
+  FallaEnLaConexion() : super(mensaje: 'Usted no tiene internet');
 }
 
 class FallaNoEncontrado extends Failure {
